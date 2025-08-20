@@ -1,0 +1,121 @@
+1. Tela Inicial / Onboarding
+
+Elementos principais:
+
+Logo animado do app.
+
+Frases curtas e inspiradoras tipo “Toda grande ideia começa com um rabisco”.
+
+Botões: Criar conta | Entrar.
+
+Função: Apresentar o propósito do app e levar ao login/cadastro.
+
+2. Tela Home (Painel de Ideias)
+
+Elementos principais:
+
+Lista/grade das últimas ideias registradas.
+
+Botão flutuante “+” para adicionar uma nova ideia.
+
+Acesso rápido a filtros: Tags, Data, Relevância.
+
+Um “carrossel” de sugestões rápidas da IA (“Quer expandir sua ideia X?”).
+
+Visual: leve, colorido, fundo claro, ícones divertidos.
+
+3. Tela Criar Ideia
+
+Opções de entrada:
+
+Texto: campo livre para digitação.
+
+Áudio: gravador que converte fala em texto.
+
+Desenho: quadro branco simples para rabiscar.
+
+Extras:
+
+Tags automáticas sugeridas pela IA.
+
+Botão “Gerar imagem” → IA cria uma ilustração representativa.
+
+Botão “Expandir ideia” → IA sugere extensões, variações ou aplicações diferentes.
+
+4. Tela de Ideia Detalhada
+
+Elementos:
+
+Título + texto da ideia.
+
+Imagem gerada pela IA.
+
+Sugestões da IA:
+
+Extensões criativas (ex.: “E se aplicarmos isso na educação?”).
+
+Conexões internas (ex.: “Essa ideia se conecta com a ideia X e Y que você já registrou”).
+
+Sugestões externas (vídeos, artigos, apps relacionados).
+
+Botão: Conectar com outra ideia (abre mapa visual).
+
+5. Tela Mapa de Conexões
+
+Visualização em rede interativa:
+
+Bolhas (nós) representando ideias.
+
+Linhas ligando ideias conectadas manualmente ou pela IA.
+
+Cores diferenciando categorias (ex.: pessoal, estudo, trabalho).
+
+Interatividade:
+
+Zoom in/out.
+
+Arrastar e reorganizar bolhas.
+
+Clicar em uma ideia → abre tela detalhada.
+
+Função: Gerar insights visuais e novas combinações.
+
+6. Tela Sugestões da IA
+
+Layout em feed:
+
+Seções:
+
+“Expansões das suas ideias”
+
+“Novas conexões sugeridas”
+
+“Inspiração externa” (links para vídeos, artigos, reportagens).
+
+Ações rápidas:
+
+Botão para salvar a sugestão.
+
+Botão para descartar.
+
+Compartilhar link da ideia expandida.
+
+7. Tela Perfil / Configurações
+
+Opções:
+
+Personalizar cores/tema.
+
+Gerenciar conta e sincronização em nuvem.
+
+Estatísticas: número de ideias criadas, conexões feitas, insights gerados.
+
+Badges gamificados (ex.: “Conector de Ideias”, “Explorador Criativo”).
+
+Experiência geral:
+
+Gamificação leve: conquistas, medalhas, progresso visual.
+
+Sensação de fluidez: animações sutis de bolhas crescendo, conexões surgindo.
+
+Design mental-friendly: nada poluído, mas com cores vivas que estimulem a criatividade.

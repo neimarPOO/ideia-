@@ -1,0 +1,87 @@
+Requisitos funcionais:
+
+Registro de ideias
+
+Entrada de ideias via texto, áudio ou desenho rápido.
+
+Opção de adicionar tags automáticas e manuais.
+
+Interface rápida, minimalista e sem atrito.
+
+Organização e visualização
+
+Exibição em mapas mentais interativos, quadros de post-its ou linhas do tempo.
+
+Organização automática por tema, prioridade ou contexto.
+
+Opções de filtro e busca inteligente.
+
+IA como catalisador criativo
+
+Geração automática de imagens representativas para cada ideia.
+
+Sugestões de extensões (ex.: variações, aplicações em outros contextos, perguntas provocativas).
+
+Capacidade de conectar ideias relacionadas e gerar insights: “Sua ideia A e B podem se juntar para formar C”.
+
+Sugestões externas inteligentes
+
+Recomendação de links úteis (vídeos, artigos, reportagens, apps) alinhados à essência da ideia.
+
+Sugestões personalizadas com base no histórico de anotações do usuário.
+
+Conexão e geração de insights
+
+Possibilidade de o usuário manualmente linkar ideias.
+
+Visualização de conexões em rede interativa.
+
+IA propondo insights a partir dessas conexões.
+
+Acesso e exportação
+
+Sincronização em nuvem.
+
+Acesso rápido via dispositivos diferentes.
+
+Exportação em PDF, imagem ou link compartilhável.
+
+Experiência do usuário
+
+Interface colorida, amigável e responsiva.
+
+Gamificação (badges, conquistas ao conectar ideias).
+
+Animações leves que dão a sensação de que as ideias estão “vivas”.
+
+Requisitos técnicos:
+
+Front-end: React Native (mobile) + React (web).
+
+Back-end: Node.js + banco de dados em nuvem (ex.: Firebase, Supabase).
+
+IA: integração com modelos generativos (para texto e imagens).
+
+Infraestrutura: API para sugestões externas (ex.: YouTube, Google News, Medium, ArXiv).
+
+Autenticação: login simples (Google, Apple, e-mail).
+
+Tom e identidade do app:
+
+Atmosfera inspiradora, como um laboratório criativo gamificado.
+
+Deve estimular curiosidade, experimentação e fluidez.
+
+Cores vibrantes, mas design limpo e intuitivo.
+
+Sugestão de nomes:
+
+MindSpark
+
+Ideaflow
+
+Eureka!
+
+Conecta Ideias
+
+Nebula (ideias como estrelas que se conectam).

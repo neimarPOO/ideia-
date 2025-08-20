@@ -1,0 +1,53 @@
+Crie um aplicativo que funcione como um organizador de ideias dinâmico e divertido, onde o usuário possa anotar ideias de forma rápida e simples, e a Inteligência Artificial atue como um catalisador criativo: organizando, expandindo, conectando e transformando ideias em algo visual, prático e inspirador.
+
+Funcionalidades principais:
+
+Registro rápido e intuitivo
+
+Interface minimalista para digitar, gravar áudio ou rabiscar ideias.
+
+Sistema de etiquetas (tags) e cores para classificar automaticamente.
+
+Organização divertida e estimulante
+
+Visualização das ideias em mapas interativos, linhas do tempo ou quadros dinâmicos.
+
+Elementos gamificados (ex.: desbloquear “insights extras” quando conectar ideias).
+
+Amplificação criativa pela IA
+
+Gerar imagens ilustrativas para cada ideia.
+
+Propor extensões e ramificações da ideia (ex.: "E se você aplicasse isso em outro contexto?").
+
+Criar conexões inesperadas entre ideias registradas.
+
+Sugestões externas inteligentes
+
+Indicar links úteis (vídeos, artigos, reportagens, aplicativos, ferramentas) que dialoguem com a essência da ideia.
+
+Recomendação baseada em contexto e relevância, não apenas em palavras-chave.
+
+Conexão e geração de insights
+
+Permitir que o usuário conecte ideias em rede, visualizando novos padrões.
+
+Gerar insights automáticos a partir das conexões (ex.: “Sua ideia A tem pontos em comum com B e C. Que tal combiná-las?”).
+
+Acesso rápido e multiplataforma
+
+Ideias salvas na nuvem, acessíveis de qualquer dispositivo.
+
+Exportação fácil para PDF, imagem, ou compartilhamento direto.
+
+Experiência divertida e dinâmica
+
+Design colorido, leve e interativo.
+
+Animações que dão a sensação de que as ideias estão “vivas” e se conectando sozinhas.
+
+Tom do aplicativo:
+
+Criativo, inspirador e acolhedor, como um laboratório de ideias em movimento.
+
+Mistura de jogo + ferramenta séria de organização.

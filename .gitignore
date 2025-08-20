@@ -1,0 +1,24 @@
+# Dependencies
+/node_modules
+
+# Firebase
+serviceAccountKey.json
+firebaseConfig.txt
+
+# Environment variables
+.env
+
+# Build output
+/packages/web/dist
+
+# Android
+/packages/mobile/android/app/build
+/packages/mobile/android/.gradle
+/packages/mobile/android/local.properties
+
+# iOS
+/packages/mobile/ios/build
+/packages/mobile/ios/Pods
+
+# Misc
+.DS_Store
