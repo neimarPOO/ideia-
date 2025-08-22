@@ -1,79 +1,269 @@
-import React from 'react';
-import { Button, Typography, Box, Paper } from '@mui/material'; // Import Material-UI components
+import React, { useState } from 'react';
 
-function IdeaDetail({ idea, onConnectIdeaClick, onBackClick }) {
-  // Placeholder data if no idea is provided (for initial rendering/testing)
-  const defaultIdea = {
-    title: "Minha Ideia Incrível",
-    text: "Esta é uma descrição detalhada da minha ideia incrível. Ela tem o potencial de revolucionar o mundo!",
-    imageUrl: "https://via.placeholder.com/300x200?text=Imagem+da+Ideia", // Placeholder image
+function IdeaDetail({ idea, onConnectIdeaClick, onBackClick, user }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(idea.title);
+  const [editedText, setEditedText] = useState(idea.text);
+  const [message, setMessage] = useState('');
+  const [expandedIdea, setExpandedIdea] = useState('');
+  const [creativeExtensions, setCreativeExtensions] = useState('');
+  const [internalConnections, setInternalConnections] = useState('');
+  const [generatedImageUrl, setGeneratedImageUrl] = useState('');
+  const [loadingAI, setLoadingAI] = useState(false);
+
+  const handleEdit = () => {
+    setIsEditing(true);
   };
 
-  const currentIdea = idea || defaultIdea;
+  const handleSave = async () => {
+    if (!user) {
+      setMessage('Você precisa estar logado para editar uma ideia.');
+      return;
+    }
+
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch(`http://localhost:3001/ideas/${idea.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ title: editedTitle, text: editedText }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      setMessage('Ideia atualizada com sucesso!');
+      setIsEditing(false);
+      // Optionally, update the idea prop in the parent component or refetch ideas
+    } catch (error) {
+      console.error('Erro ao salvar ideia:', error);
+      setMessage(`Erro ao salvar ideia: ${error.message}`);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!user) {
+      setMessage('Você precisa estar logado para deletar uma ideia.');
+      return;
+    }
+
+    if (!window.confirm('Tem certeza que deseja deletar esta ideia?')) {
+      return;
+    }
+
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch(`http://localhost:3001/ideas/${idea.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${idToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      setMessage('Ideia deletada com sucesso!');
+      onBackClick(); // Go back to the idea list
+    } catch (error) {
+      console.error('Erro ao deletar ideia:', error);
+      setMessage(`Erro ao deletar ideia: ${error.message}`);
+    }
+  };
+
+  const generateImage = async () => {
+    if (!user) {
+      setMessage('Você precisa estar logado para gerar uma imagem.');
+      return;
+    }
+    setLoadingAI(true);
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch('http://localhost:3001/ideas/generate-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ prompt: `Gere uma imagem para a ideia: ${idea.title} - ${idea.text}` }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      // Assuming the backend returns a URL or base64 image data
+      setGeneratedImageUrl(data.imageUrl || 'https://via.placeholder.com/300x200?text=Imagem+Gerada');
+      setMessage('Imagem gerada com sucesso!');
+    } catch (error) {
+      console.error('Erro ao gerar imagem:', error);
+      setMessage(`Erro ao gerar imagem: ${error.message}`);
+    } finally {
+      setLoadingAI(false);
+    }
+  };
+
+  const expandIdea = async () => {
+    if (!user) {
+      setMessage('Você precisa estar logado para expandir a ideia.');
+      return;
+    }
+    setLoadingAI(true);
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch('http://localhost:3001/ideas/suggest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ prompt: `Expanda a seguinte ideia: ${idea.title} - ${idea.text}` }),
+      });
+      const data = await response.json();
+      setExpandedIdea(data.suggestion);
+    } catch (error) {
+      console.error('Erro ao expandir ideia:', error);
+      setMessage('Erro ao expandir ideia.');
+    } finally {
+      setLoadingAI(false);
+    }
+  };
+
+  const generateCreativeExtensions = async () => {
+    if (!user) {
+      setMessage('Você precisa estar logado para gerar extensões.');
+      return;
+    }
+    setLoadingAI(true);
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch('http://localhost:3001/ideas/suggest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ prompt: `Me dê extensões criativas para a ideia: ${idea.title} - ${idea.text}` }),
+      });
+      const data = await response.json();
+      setCreativeExtensions(data.suggestion);
+    } catch (error) {
+      console.error('Erro ao gerar extensões criativas:', error);
+      setMessage('Erro ao gerar extensões criativas.');
+    } finally {
+      setLoadingAI(false);
+    }
+  };
+
+  const generateInternalConnections = async () => {
+    if (!user) {
+      setMessage('Você precisa estar logado para gerar conexões.');
+      return;
+    }
+    setLoadingAI(true);
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch('http://localhost:3001/ideas/suggest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ prompt: `Sugira conexões internas para a ideia: ${idea.title} - ${idea.text}` }),
+      });
+      const data = await response.json();
+      setInternalConnections(data.suggestion);
+    } catch (error) {
+      console.error('Erro ao gerar conexões internas:', error);
+      setMessage('Erro ao gerar conexões internas.');
+    } finally {
+      setLoadingAI(false);
+    }
+  };
 
   return (
-    <Box
-      className="idea-detail-container handsdraw-border" // Apply handsdraw-border
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: 3,
-        maxWidth: 800,
-        margin: 'auto',
-        mt: 5,
-      }}
-    >
-      <Button variant="outlined" onClick={onBackClick} sx={{ alignSelf: 'flex-start', mb: 2 }}>
-        Voltar
-      </Button>
-      <Typography variant="h4" component="h2" gutterBottom>
-        {currentIdea.title}
-      </Typography>
-      <Typography variant="body1" paragraph>
-        {currentIdea.text}
-      </Typography>
-      <Box sx={{ mb: 3 }}>
-        <img src={currentIdea.imageUrl} alt="Imagem da Ideia" style={{ maxWidth: '100%', height: 'auto', border: '2px solid #333', boxShadow: '2px 2px 0px 0px rgba(0,0,0,0.75)' }} />
-      </Box>
+    <div className="container idea-detail-container">
+      <img src="/logo.png" alt="Ideia+ Logo" className="logo logo-small" />
+      <button className="back-button" onClick={onBackClick}>Voltar</button>
 
-      <Typography variant="h5" component="h3" gutterBottom>
-        Sugestões da IA:
-      </Typography>
+      {isEditing ? (
+        <form className="form-container" onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
+          <input
+            type="text"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            required
+          />
+          <textarea
+            rows="5"
+            value={editedText}
+            onChange={(e) => setEditedText(e.target.value)}
+            required
+          ></textarea>
+          <div className="button-group">
+            <button type="submit">Salvar</button>
+            <button type="button" onClick={() => setIsEditing(false)}>Cancelar</button>
+          </div>
+        </form>
+      ) : (
+        <>
+          <h2>{idea.title}</h2>
+          <p>{idea.text}</p>
+          <img src={generatedImageUrl || idea.imageUrl} alt="Imagem da Ideia" className="idea-image" />
 
-      <Paper className="handsdraw-border" sx={{ p: 2, mb: 2, width: '100%' }}>
-        <Typography variant="h6" component="h4">
-          Extensões Criativas:
-        </Typography>
+          {user && (
+            <div className="button-group">
+              <button onClick={handleEdit}>Editar</button>
+              <button onClick={handleDelete}>Deletar</button>
+            </div>
+          )}
+        </>
+      )}
+
+      <h3>Recursos de IA:</h3>
+      <div className="button-group">
+        <button onClick={generateImage} disabled={loadingAI}>Gerar Imagem</button>
+        <button onClick={expandIdea} disabled={loadingAI}>Expandir Ideia</button>
+      </div>
+      {expandedIdea && (
+        <div className="suggestions-section">
+          <h4>Ideia Expandida:</h4>
+          <p>{expandedIdea}</p>
+        </div>
+      )}
+
+      <h3>Sugestões da IA:</h3>
+
+      <div className="suggestions-section">
+        <h4>Extensões Criativas:</h4>
+        <button onClick={generateCreativeExtensions} disabled={loadingAI}>Gerar Extensões</button>
+        {creativeExtensions && <p>{creativeExtensions}</p>}
+      </div>
+
+      <div className="suggestions-section">
+        <h4>Conexões Internas:</h4>
+        <button onClick={generateInternalConnections} disabled={loadingAI}>Gerar Conexões</button>
+        {internalConnections && <p>{internalConnections}</p>}
+      </div>
+
+      <div className="suggestions-section">
+        <h4>Sugestões Externas:</h4>
         <ul>
-          <Typography component="li" variant="body2">E se aplicarmos isso na educação? (placeholder)</Typography>
-          <Typography component="li" variant="body2">Como isso pode ser usado em outro setor? (placeholder)</Typography>
+          <li>Vídeos, artigos, apps relacionados. (placeholder)</li>
         </ul>
-      </Paper>
+      </div>
 
-      <Paper className="handsdraw-border" sx={{ p: 2, mb: 2, width: '100%' }}>
-        <Typography variant="h6" component="h4">
-          Conexões Internas:
-        </Typography>
-        <ul>
-          <Typography component="li" variant="body2">Essa ideia se conecta com a ideia X e Y que você já registrou. (placeholder)</Typography>
-        </ul>
-      </Paper>
-
-      <Paper className="handsdraw-border" sx={{ p: 2, mb: 3, width: '100%' }}>
-        <Typography variant="h6" component="h4">
-          Sugestões Externas:
-        </Typography>
-        <ul>
-          <Typography component="li" variant="body2">Vídeos, artigos, apps relacionados. (placeholder)</Typography>
-        </ul>
-      </Paper>
-
-      <Button variant="contained" color="primary" onClick={onConnectIdeaClick}>
-        Conectar com outra ideia
-      </Button>
-    </Box>
+      <button onClick={onConnectIdeaClick}>Conectar com outra ideia</button>
+      {message && <p>{message}</p>}
+    </div>
   );
 }
 
 export default IdeaDetail;
+

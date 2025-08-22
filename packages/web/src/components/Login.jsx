@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Box } from '@mui/material'; // Import Material-UI components
+import { auth } from '../firebaseConfig';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 function Login({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
@@ -11,81 +12,54 @@ function Login({ onLoginSuccess }) {
     setMessage('');
 
     try {
-      const response = await fetch('http://localhost:3001/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setMessage(`Login successful! UID: ${data.uid}`);
-        if (onLoginSuccess) {
-          onLoginSuccess(data.uid);
-        }
-      } else {
-        setMessage(`Error: ${data.error}`);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      setMessage(`Login successful! UID: ${user.uid}`);
+      if (onLoginSuccess) {
+        onLoginSuccess(user);
       }
     } catch (error) {
-      setMessage(`Error: ${error.message}`);
+      console.error('Error during login:', error);
+      let errorMessage = 'Failed to login. Please check your credentials.';
+      switch (error.code) {
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+        case 'auth/invalid-credential':
+          errorMessage = 'Invalid email or password.';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Invalid email address.';
+          break;
+        default:
+          errorMessage = error.message;
+          break;
+      }
+      setMessage(`Error: ${errorMessage}`);
     }
   };
 
   return (
-    <Box
-      className="login-container handsdraw-border" // Added handsdraw-border class
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 3,
-        maxWidth: 400,
-        margin: 'auto',
-        mt: 5, // Margin top
-      }}
-    >
-      <Typography variant="h4" component="h2" gutterBottom>
-        Login
-      </Typography>
-      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-        <TextField
-          label="Email"
+    <div className="container">
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit} className="form-container">
+        <input
           type="email"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          fullWidth
-          margin="normal"
           required
         />
-        <TextField
-          label="Password"
+        <input
           type="password"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          fullWidth
-          margin="normal"
           required
         />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ mt: 2 }} // Margin top
-        >
-          Login
-        </Button>
+        <button type="submit">Login</button>
       </form>
-      {message && (
-        <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
-          {message}
-        </Typography>
-      )}
-    </Box>
+      {message && <p className="error-message">{message}</p>}
+    </div>
   );
 }
 

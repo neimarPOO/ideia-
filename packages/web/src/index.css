@@ -1,13 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Gloria+Hallelujah&display=swap');
 
 :root {
-  font-family: 'Architects Daughter', cursive, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --primary-color: #3f51b5;
+  --secondary-color: #ff4081;
+  --background-color: #f5f5f5;
+  --font-color: #333;
+  --white: #fff;
+  --border-color: #ddd;
+  --error-color: #f44336;
+  --success-color: #4caf50;
+
+  font-family: 'Roboto', sans-serif, system-ui, Avenir, Helvetica, Arial;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #89CFF0; /* Baby blue background */
+  color: var(--font-color);
+  background-color: var(--background-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,61 +22,84 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: #89CFF0; /* Ensure body background matches root */
-  /* Add a subtle border effect for handsdraw style */
-  border: 2px solid #333;
-  border-radius: 5px;
-  box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.75);
+  background-image: url('/fundo.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+#root {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem;
+  text-align: center;
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
+
 a:hover {
-  color: #535bf2;
+  color: var(--secondary-color);
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+h1, h2, h3 {
+  font-family: 'Gloria Hallelujah', cursive;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
+button, input[type="submit"] {
+  font-family: 'Gloria Hallelujah', cursive;
+  border-radius: 12px;
+  border: 3px solid #000;
   padding: 0.6em 1.2em;
-  font-size: 1em;
+  font-size: 1.1em;
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--primary-color);
+  color: var(--white);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 5px 5px 0 #000;
+  transform: translate(0, 0);
 }
-button:hover {
-  border-color: #646cff;
+
+button:hover, input[type="submit"]:hover {
+  background-color: var(--secondary-color);
+  box-shadow: 8px 8px 0 #000;
+  transform: translate(-3px, -3px);
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #89CFF0; /* Baby blue background */
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+input, textarea {
+  font-family: 'Roboto', sans-serif;
+  width: 100%;
+  padding: 0.8em;
+  margin-bottom: 1em;
+  border: 2px solid #000;
+  border-radius: 4px;
+  background-color: var(--white);
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
 }
+
+input:focus, textarea:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+

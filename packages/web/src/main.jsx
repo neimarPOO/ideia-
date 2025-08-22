@@ -4,18 +4,13 @@ import './index.css'
 import App from './App.jsx'
 import { ThemeProvider, createTheme } from '@mui/material/styles'; // Import ThemeProvider and createTheme
 import CssBaseline from '@mui/material/CssBaseline'; // Import CssBaseline
+import './firebaseConfig'; // Import Firebase configuration
 
 // Define a custom theme
 const theme = createTheme({
   palette: {
     background: {
       default: '#89CFF0', // Set default background to baby blue
-    },
-  },
-});
-  palette: {
-    background: {
-      default: '#89CFF0', // Set the default background color to baby blue
     },
   },
   components: {

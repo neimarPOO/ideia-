@@ -1,25 +1,49 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Box, Paper } from '@mui/material'; // Import Material-UI components
 
-function CreateIdea({ onCreateIdeaSuccess }) {
+function CreateIdea({ onCreateIdeaSuccess, user }) {
   const [ideaText, setIdeaText] = useState('');
   const [message, setMessage] = useState('');
-  const [audioRecording, setAudioRecording] = useState(false); // Placeholder for audio recording state
-  const [drawingMode, setDrawingMode] = useState(false); // Placeholder for drawing mode state
+  const [audioRecording, setAudioRecording] = useState(false);
+  const [drawingMode, setDrawingMode] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setMessage('');
-    // In a real application, you would send this idea to the backend
-    console.log('Idea submitted:', ideaText);
-    setMessage('Idea submitted successfully!');
-    if (onCreateIdeaSuccess) {
-      onCreateIdeaSuccess();
+
+    if (!user) {
+      setMessage('Você precisa estar logado para salvar uma ideia.');
+      return;
     }
-    setIdeaText(''); // Clear the input
+
+    try {
+      const idToken = await user.getIdToken();
+
+      const response = await fetch('http://localhost:3001/ideas', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ title: ideaText.substring(0, 50), text: ideaText }), // Usando parte do texto como título
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setMessage('Ideia salva com sucesso!');
+      console.log('Ideia salva:', data);
+      if (onCreateIdeaSuccess) {
+        onCreateIdeaSuccess();
+      }
+      setIdeaText('');
+    } catch (error) {
+      console.error('Erro ao salvar ideia:', error);
+      setMessage(`Erro ao salvar ideia: ${error.message}`);
+    }
   };
 
-  // Placeholder functions for audio and drawing
   const toggleAudioRecording = () => {
     setAudioRecording(!audioRecording);
     setMessage(audioRecording ? 'Gravação de áudio parada.' : 'Gravando áudio...');
@@ -30,108 +54,48 @@ function CreateIdea({ onCreateIdeaSuccess }) {
     setMessage(drawingMode ? 'Modo de desenho desativado.' : 'Modo de desenho ativado.');
   };
 
-  const generateImage = () => {
-    setMessage('Gerando imagem com IA...');
-    // Simulate AI processing
-    setTimeout(() => {
-      setMessage('Imagem gerada!');
-    }, 1500);
-  };
-
-  const expandIdea = () => {
-    setMessage('Expandindo ideia com IA...');
-    // Simulate AI processing
-    setTimeout(() => {
-      setMessage('Ideia expandida!');
-    }, 1500);
-  };
-
   return (
-    <Box
-      className="create-idea-container handsdraw-border" // Apply handsdraw-border
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: 3,
-        maxWidth: 600,
-        margin: 'auto',
-        mt: 5,
-      }}
-    >
-      <Typography variant="h4" component="h2" gutterBottom>
-        Criar Nova Ideia
-      </Typography>
-      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-        <TextField
-          label="Sua Ideia (Texto)"
-          multiline
-          rows={5}
+    <div className="container create-idea-container">
+      <img src="/logo.png" alt="Ideia+ Logo" className="logo logo-small" />
+      <h2>Criar Nova Ideia</h2>
+      <form onSubmit={handleSubmit} className="form-container">
+        <textarea
+          placeholder="Digite sua ideia aqui..."
+          rows="5"
           value={ideaText}
           onChange={(e) => setIdeaText(e.target.value)}
-          placeholder="Digite sua ideia aqui..."
-          fullWidth
-          margin="normal"
           required
-        />
+        ></textarea>
 
-        <Typography variant="h5" component="h3" sx={{ mt: 3 }}>
-          Opções de Entrada:
-        </Typography>
-        <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
-          <Button variant="outlined" onClick={toggleAudioRecording}>
+        <h3>Opções de Entrada:</h3>
+        <div className="button-group">
+          <button type="button" onClick={toggleAudioRecording}>
             {audioRecording ? 'Parar Gravação' : 'Gravar Áudio'}
-          </Button>
-          {audioRecording && <Typography variant="body2">Gravando... (placeholder para transcrição)</Typography>}
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          <Button variant="outlined" onClick={toggleDrawingMode}>
+          </button>
+          <button type="button" onClick={toggleDrawingMode}>
             {drawingMode ? 'Sair do Desenho' : 'Desenhar Ideia'}
-          </Button>
-          {drawingMode && (
-            <Paper
-              className="handsdraw-border" // Apply handsdraw-border
-              sx={{
-                border: '1px solid black',
-                width: '100%',
-                height: '200px',
-                mt: 1,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <Typography variant="body2">Quadro de Desenho (placeholder)</Typography>
-            </Paper>
-          )}
-        </Box>
+          </button>
+        </div>
+        {audioRecording && <p>Gravando... (placeholder para transcrição)</p>}
+        {drawingMode && (
+          <div className="drawing-canvas-placeholder">
+            <p>Quadro de Desenho (placeholder)</p>
+          </div>
+        )}
 
-        <Typography variant="h5" component="h3" sx={{ mt: 3 }}>
-          Recursos de IA:
-        </Typography>
-        <Box sx={{ mt: 1 }}>
-          <Typography variant="body2">Tags Automáticas Sugeridas: (placeholder)</Typography>
-        </Box>
-        <Box sx={{ display: 'flex', gap: 2, mt: 2 }}>
-          <Button variant="outlined" onClick={generateImage}>
-            Gerar Imagem
-          </Button>
-          <Button variant="outlined" onClick={expandIdea}>
-            Expandir Ideia
-          </Button>
-        </Box>
+        <h3>Recursos de IA:</h3>
+        <p>Tags Automáticas Sugeridas: (placeholder)</p>
+        <div className="button-group">
+          {/* <button type="button" onClick={generateImage}>Gerar Imagem</button> */}
+          {/* <button type="button" onClick={expandIdea}>Expandir Ideia</button> */}
+        </div>
 
-        <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 3 }}>
-          Salvar Ideia
-        </Button>
+        <button type="submit">Salvar Ideia</button>
       </form>
-      {message && (
-        <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
-          {message}
-        </Typography>
-      )}
-    </Box>
+      {message && <p>{message}</p>}
+    </div>
   );
 }
 
 export default CreateIdea;
+

@@ -1,57 +1,256 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.container {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 1.5rem 2rem;
+  border-radius: 4px;
+  border: 2px solid #000;
+  box-shadow: 8px 8px 0 #000;
+  width: 100%;
+  max-width: 450px;
   text-align: center;
-  /* Ensure no background color is set here, so body background is visible */
+  animation: fadeIn 0.4s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+.container:hover {
+  box-shadow: 10px 10px 0 #000;
+}
+
+.onboarding-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.onboarding-container .container {
   background-color: transparent;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.logo-container {
+  position: relative;
+  z-index: 1;
+}
+
+.logo-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: -1;
+  animation: blinking-light 3s infinite ease-in-out;
+  filter: blur(30px);
+}
+
 .logo {
-  height: 6em;
-  padding: 1.5em;
+  height: 7em;
+  padding: 1em;
   will-change: filter;
   transition: filter 300ms;
 }
+
+.logo-small {
+  height: 4em;
+  padding: 0.5em;
+}
+
+.logo-large {
+  height: 18em;
+  padding: 1.5em;
+}
+
+@keyframes blinking-light {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.7);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 0.7;
+  }
+}
+
+.tagline {
+  font-family: 'Gloria Hallelujah', cursive;
+  font-size: 1.5rem;
+  margin: 2rem 0;
+  color: #000;
+  text-shadow: 1px 1px 2px #fff;
+}
+
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 1.5em #3f51b5aa);
 }
+
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 1.5em #ff4081aa);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.form-container input {
+  margin-bottom: 0;
 }
 
-.card {
-  padding: 2em;
+.error-message {
+  color: var(--error-color);
+  margin-top: -0.4rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.85em;
 }
 
-.read-the-docs {
-  color: #888;
+.idea-list-placeholder, .filters-placeholder, .ai-suggestions-placeholder, .settings-section, .suggestions-section {
+  background-color: #fafafa;
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 2px solid #000;
+  box-shadow: 5px 5px 0 #000;
 }
 
-.handsdraw-border {
-  border: 2px solid #333;
-  border-radius: 8px;
-  box-shadow: 3px 3px 0px 0px rgba(0,0,0,0.75);
-  transition: all 0.1s ease-in-out;
-  background-color: white; /* Explicitly set background to white for handsdraw elements */
+.idea-card {
+  background-color: var(--white);
+  border-radius: 4px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid #000;
+  box-shadow: 5px 5px 0 #000;
 }
 
-.handsdraw-border:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px 0px rgba(0,0,0,0.75);
+.idea-card:hover {
+  box-shadow: 8px 8px 0 #000;
+}
+
+.fab {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #000;
+  box-shadow: 5px 5px 0 #000;
+}
+
+.create-idea-container {
+  max-width: 650px;
+}
+
+.drawing-canvas-placeholder {
+  border-radius: 4px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.8rem 0;
+  background-color: #fafafa;
+  border: 2px dashed #000;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  margin: 0.8rem 0;
+}
+
+.idea-detail-container {
+  max-width: 750px;
+  text-align: left;
+}
+
+.back-button {
+  align-self: flex-start;
+  margin-bottom: 0.8rem;
+}
+
+.idea-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 0.8rem 0;
+  border: 2px solid #000;
+}
+
+.suggestions-section h4 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.suggestions-section ul {
+  padding-left: 18px;
+  margin: 0;
+}
+
+.connection-map-container {
+  max-width: 850px;
+}
+
+.connection-map-placeholder {
+  border-radius: 4px;
+  height: 350px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.8rem;
+  background-color: #fafafa;
+  border: 2px dashed #000;
+}
+
+.ai-suggestions-container {
+  max-width: 750px;
+  text-align: left;
+}
+
+.suggestion-item {
+  margin-bottom: 0.8rem;
+}
+
+.suggestion-item p {
+  margin-bottom: 0.4rem;
+}
+
+.profile-settings-container {
+  max-width: 750px;
+  text-align: left;
+}
+
+.settings-section h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.settings-section ul {
+  padding-left: 18px;
+  margin: 0;
 }

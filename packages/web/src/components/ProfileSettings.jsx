@@ -1,73 +1,50 @@
 import React from 'react';
-import { Button, Typography, Box, Paper, List, ListItem, ListItemText } from '@mui/material'; // Import Material-UI components
 
-function ProfileSettings({ onBackClick }) {
+function ProfileSettings({ onBackClick, user, onLogout }) {
   return (
-    <Box
-      className="profile-settings-container handsdraw-border" // Apply handsdraw-border
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        padding: 3,
-        maxWidth: 800,
-        margin: 'auto',
-        mt: 5,
-      }}
-    >
-      <Button variant="outlined" onClick={onBackClick} sx={{ alignSelf: 'flex-start', mb: 2 }}>
-        Voltar
-      </Button>
-      <Typography variant="h4" component="h2" gutterBottom>
-        Perfil e Configurações
-      </Typography>
+    <div className="container profile-settings-container">
+      <img src="/logo.png" alt="Ideia+ Logo" className="logo logo-small" />
+      <button className="back-button" onClick={onBackClick}>Voltar</button>
+      <h2>Perfil e Configurações</h2>
 
-      <Paper className="handsdraw-border" sx={{ p: 2, mb: 3, width: '100%' }}>
-        <Typography variant="h5" component="h3" gutterBottom>
-          Personalização
-        </Typography>
-        <Typography variant="body1">Opções de cores/tema (placeholder)</Typography>
-      </Paper>
+      {user && (
+        <div className="settings-section">
+          <h3>Informações do Usuário</h3>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>UID:</strong> {user.uid}</p>
+          <button onClick={onLogout}>Sair da Conta</button>
+        </div>
+      )}
 
-      <Paper className="handsdraw-border" sx={{ p: 2, mb: 3, width: '100%' }}>
-        <Typography variant="h5" component="h3" gutterBottom>
-          Gerenciamento de Conta
-        </Typography>
-        <Typography variant="body1">Gerenciar conta e sincronização em nuvem (placeholder)</Typography>
-      </Paper>
+      <div className="settings-section">
+        <h3>Personalização</h3>
+        <p>Opções de cores/tema (placeholder)</p>
+      </div>
 
-      <Paper className="handsdraw-border" sx={{ p: 2, mb: 3, width: '100%' }}>
-        <Typography variant="h5" component="h3" gutterBottom>
-          Estatísticas
-        </Typography>
-        <List>
-          <ListItem disablePadding>
-            <ListItemText primary="Número de ideias criadas: (placeholder)" />
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemText primary="Conexões feitas: (placeholder)" />
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemText primary="Insights gerados: (placeholder)" />
-          </ListItem>
-        </List>
-      </Paper>
+      <div className="settings-section">
+        <h3>Gerenciamento de Conta</h3>
+        <p>Gerenciar conta e sincronização em nuvem (placeholder)</p>
+      </div>
 
-      <Paper className="handsdraw-border" sx={{ p: 2, mb: 3, width: '100%' }}>
-        <Typography variant="h5" component="h3" gutterBottom>
-          Badges Gamificados
-        </Typography>
-        <List>
-          <ListItem disablePadding>
-            <ListItemText primary="Conector de Ideias (placeholder)" />
-          </ListItem>
-          <ListItem disablePadding>
-            <ListItemText primary="Explorador Criativo (placeholder)" />
-          </ListItem>
-        </List>
-      </Paper>
-    </Box>
+      <div className="settings-section">
+        <h3>Estatísticas</h3>
+        <ul>
+          <li>Número de ideias criadas: (placeholder)</li>
+          <li>Conexões feitas: (placeholder)</li>
+          <li>Insights gerados: (placeholder)</li>
+        </ul>
+      </div>
+
+      <div className="settings-section">
+        <h3>Badges Gamificados</h3>
+        <ul>
+          <li>Conector de Ideias (placeholder)</li>
+          <li>Explorador Criativo (placeholder)</li>
+        </ul>
+      </div>
+    </div>
   );
 }
 
 export default ProfileSettings;
+

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { TextField, Button, Typography, Box } from '@mui/material'; // Import Material-UI components
+import { auth } from '../firebaseConfig';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
-function Register() {
+function Register({ onRegisterSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
@@ -11,78 +12,55 @@ function Register() {
     setMessage('');
 
     try {
-      const response = await fetch('http://localhost:3001/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setMessage(`User created successfully! UID: ${data.uid}`);
-      } else {
-        setMessage(`Error: ${data.error}`);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      setMessage(`User registered successfully! UID: ${user.uid}`);
+      if (onRegisterSuccess) {
+        onRegisterSuccess(user);
       }
     } catch (error) {
-      setMessage(`Error: ${error.message}`);
+      console.error('Error during registration:', error);
+      let errorMessage = 'Failed to register. Please try again.';
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          errorMessage = 'Email already in use.';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Invalid email address.';
+          break;
+        case 'auth/weak-password':
+          errorMessage = 'Password is too weak. Please use at least 6 characters.';
+          break;
+        default:
+          errorMessage = error.message;
+          break;
+      }
+      setMessage(`Error: ${errorMessage}`);
     }
   };
 
   return (
-    <Box
-      className="register-container handsdraw-border" // Added handsdraw-border class
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 3,
-        maxWidth: 400,
-        margin: 'auto',
-        mt: 5, // Margin top
-      }}
-    >
-      <Typography variant="h4" component="h2" gutterBottom>
-        Register
-      </Typography>
-      <form onSubmit={handleSubmit} style={{ width: '100%' }}>
-        <TextField
-          label="Email"
+    <div className="container">
+      <h2>Register</h2>
+      <form onSubmit={handleSubmit} className="form-container">
+        <input
           type="email"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          fullWidth
-          margin="normal"
           required
         />
-        <TextField
-          label="Password"
+        <input
           type="password"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          fullWidth
-          margin="normal"
           required
         />
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ mt: 2 }} // Margin top
-        >
-          Register
-        </Button>
+        <button type="submit">Register</button>
       </form>
-      {message && (
-        <Typography variant="body2" color="textSecondary" sx={{ mt: 2 }}>
-          {message}
-        </Typography>
-      )}
-    </Box>
+      {message && <p className="error-message">{message}</p>}
+    </div>
   );
 }
 

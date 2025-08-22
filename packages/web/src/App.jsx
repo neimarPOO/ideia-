@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Register from './components/Register';
 import Login from './components/Login';
 import Onboarding from './components/Onboarding';
@@ -7,13 +7,27 @@ import CreateIdea from './components/CreateIdea';
 import IdeaDetail from './components/IdeaDetail';
 import ConnectionMap from './components/ConnectionMap';
 import AISuggestions from './components/AISuggestions';
-import ProfileSettings from './components/ProfileSettings'; // Import ProfileSettings component
+import ProfileSettings from './components/ProfileSettings';
+import { auth } from './firebaseConfig';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import './App.css';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('onboarding');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null); // Firebase user object
   const [selectedIdea, setSelectedIdea] = useState(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      if (currentUser) {
+        setCurrentScreen('home');
+      } else {
+        setCurrentScreen('onboarding');
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleRegisterClick = () => {
     setCurrentScreen('register');
@@ -23,10 +37,19 @@ function App() {
     setCurrentScreen('login');
   };
 
-  const handleLoginSuccess = (uid) => {
-    setIsLoggedIn(true);
+  const handleAuthSuccess = (loggedInUser) => {
+    setUser(loggedInUser);
     setCurrentScreen('home');
-    console.log('User logged in with UID:', uid);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      setUser(null);
+      setCurrentScreen('onboarding');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   const handleCreateIdeaClick = () => {
@@ -55,40 +78,40 @@ function App() {
     setCurrentScreen('ideaDetail');
   };
 
-  const handleAISuggestionsClick = () => { // New handler for AI Suggestions
+  const handleAISuggestionsClick = () => {
     setCurrentScreen('aiSuggestions');
   };
 
-  const handleBackFromAISuggestions = () => { // New handler to go back from AI Suggestions
+  const handleBackFromAISuggestions = () => {
     setCurrentScreen('home');
   };
 
-  const handleProfileSettingsClick = () => { // New handler for Profile/Settings
+  const handleProfileSettingsClick = () => {
     setCurrentScreen('profileSettings');
   };
 
-  const handleBackFromProfileSettings = () => { // New handler to go back from Profile/Settings
+  const handleBackFromProfileSettings = () => {
     setCurrentScreen('home');
   };
 
   return (
     <div className="App">
-      {isLoggedIn ? (
+      {user ? (
         <>
-          {currentScreen === 'home' && <Home onCreateIdeaClick={handleCreateIdeaClick} onIdeaClick={handleIdeaClick} onAISuggestionsClick={handleAISuggestionsClick} onProfileSettingsClick={handleProfileSettingsClick} />}
-          {currentScreen === 'createIdea' && <CreateIdea onCreateIdeaSuccess={handleCreateIdeaSuccess} />}
-          {currentScreen === 'ideaDetail' && <IdeaDetail idea={selectedIdea} onBackClick={handleBackFromDetail} onConnectIdeaClick={handleConnectIdeaClick} />}
-          {currentScreen === 'connectionMap' && <ConnectionMap onBackClick={handleBackFromConnectionMap} />}
-          {currentScreen === 'aiSuggestions' && <AISuggestions onBackClick={handleBackFromAISuggestions} />}
-          {currentScreen === 'profileSettings' && <ProfileSettings onBackClick={handleBackFromProfileSettings} />}
+          {currentScreen === 'home' && <Home onCreateIdeaClick={handleCreateIdeaClick} onIdeaClick={handleIdeaClick} onAISuggestionsClick={handleAISuggestionsClick} onProfileSettingsClick={handleProfileSettingsClick} onLogout={handleLogout} user={user} />}
+          {currentScreen === 'createIdea' && <CreateIdea onCreateIdeaSuccess={handleCreateIdeaSuccess} user={user} />}
+          {currentScreen === 'ideaDetail' && <IdeaDetail idea={selectedIdea} onBackClick={handleBackFromDetail} onConnectIdeaClick={handleConnectIdeaClick} user={user} />}
+          {currentScreen === 'connectionMap' && <ConnectionMap onBackClick={handleBackFromConnectionMap} user={user} />}
+          {currentScreen === 'aiSuggestions' && <AISuggestions onBackClick={handleBackFromAISuggestions} user={user} />}
+          {currentScreen === 'profileSettings' && <ProfileSettings onBackClick={handleBackFromProfileSettings} user={user} onLogout={handleLogout} />}
         </>
       ) : (
         <>
           {currentScreen === 'onboarding' && (
             <Onboarding onRegisterClick={handleRegisterClick} onLoginClick={handleLoginClick} />
           )}
-          {currentScreen === 'register' && <Register />}
-          {currentScreen === 'login' && <Login onLoginSuccess={handleLoginSuccess} />}
+          {currentScreen === 'register' && <Register onRegisterSuccess={handleAuthSuccess} />}
+          {currentScreen === 'login' && <Login onLoginSuccess={handleAuthSuccess} />}
         </>
       )}
     </div>
