@@ -3,11 +3,8 @@ import Register from './components/Register';
 import Login from './components/Login';
 import Onboarding from './components/Onboarding';
 import Home from './components/Home';
-import CreateIdea from './components/CreateIdea';
 import IdeaDetail from './components/IdeaDetail';
 import ConnectionMap from './components/ConnectionMap';
-import AISuggestions from './components/AISuggestions';
-import ProfileSettings from './components/ProfileSettings';
 import { auth } from './firebaseConfig';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import './App.css';
@@ -52,14 +49,6 @@ function App() {
     }
   };
 
-  const handleCreateIdeaClick = () => {
-    setCurrentScreen('createIdea');
-  };
-
-  const handleCreateIdeaSuccess = () => {
-    setCurrentScreen('home');
-  };
-
   const handleIdeaClick = (idea) => {
     setSelectedIdea(idea);
     setCurrentScreen('ideaDetail');
@@ -78,32 +67,13 @@ function App() {
     setCurrentScreen('ideaDetail');
   };
 
-  const handleAISuggestionsClick = () => {
-    setCurrentScreen('aiSuggestions');
-  };
-
-  const handleBackFromAISuggestions = () => {
-    setCurrentScreen('home');
-  };
-
-  const handleProfileSettingsClick = () => {
-    setCurrentScreen('profileSettings');
-  };
-
-  const handleBackFromProfileSettings = () => {
-    setCurrentScreen('home');
-  };
-
   return (
     <div className="App">
       {user ? (
         <>
-          {currentScreen === 'home' && <Home onCreateIdeaClick={handleCreateIdeaClick} onIdeaClick={handleIdeaClick} onAISuggestionsClick={handleAISuggestionsClick} onProfileSettingsClick={handleProfileSettingsClick} onLogout={handleLogout} user={user} />}
-          {currentScreen === 'createIdea' && <CreateIdea onCreateIdeaSuccess={handleCreateIdeaSuccess} user={user} />}
+          {currentScreen === 'home' && <Home onIdeaClick={handleIdeaClick} onLogout={handleLogout} user={user} />}
           {currentScreen === 'ideaDetail' && <IdeaDetail idea={selectedIdea} onBackClick={handleBackFromDetail} onConnectIdeaClick={handleConnectIdeaClick} user={user} />}
           {currentScreen === 'connectionMap' && <ConnectionMap onBackClick={handleBackFromConnectionMap} user={user} />}
-          {currentScreen === 'aiSuggestions' && <AISuggestions onBackClick={handleBackFromAISuggestions} user={user} />}
-          {currentScreen === 'profileSettings' && <ProfileSettings onBackClick={handleBackFromProfileSettings} user={user} onLogout={handleLogout} />}
         </>
       ) : (
         <>

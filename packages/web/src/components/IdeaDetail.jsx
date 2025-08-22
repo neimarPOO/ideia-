@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function IdeaDetail({ idea, onConnectIdeaClick, onBackClick, user }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -8,8 +8,43 @@ function IdeaDetail({ idea, onConnectIdeaClick, onBackClick, user }) {
   const [expandedIdea, setExpandedIdea] = useState('');
   const [creativeExtensions, setCreativeExtensions] = useState('');
   const [internalConnections, setInternalConnections] = useState('');
-  const [generatedImageUrl, setGeneratedImageUrl] = useState('');
+  const [generatedImageUrl, setGeneratedImageUrl] = useState(idea.imageUrl || '');
   const [loadingAI, setLoadingAI] = useState(false);
+
+  const generateImage = async () => {
+    if (!user || generatedImageUrl) {
+      return;
+    }
+    setLoadingAI(true);
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch('http://localhost:3001/ideas/generate-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ prompt: `Gere uma imagem para a ideia: ${idea.title} - ${idea.text}` }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setGeneratedImageUrl(data.imageUrl || 'https://via.placeholder.com/300x200?text=Imagem+Gerada');
+      setMessage('Imagem gerada com sucesso!');
+    } catch (error) {
+      console.error('Erro ao gerar imagem:', error);
+      setMessage(`Erro ao gerar imagem: ${error.message}`);
+    } finally {
+      setLoadingAI(false);
+    }
+  };
+
+  useEffect(() => {
+    generateImage();
+  }, [user]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -73,39 +108,6 @@ function IdeaDetail({ idea, onConnectIdeaClick, onBackClick, user }) {
     } catch (error) {
       console.error('Erro ao deletar ideia:', error);
       setMessage(`Erro ao deletar ideia: ${error.message}`);
-    }
-  };
-
-  const generateImage = async () => {
-    if (!user) {
-      setMessage('Você precisa estar logado para gerar uma imagem.');
-      return;
-    }
-    setLoadingAI(true);
-    try {
-      const idToken = await user.getIdToken();
-      const response = await fetch('http://localhost:3001/ideas/generate-image', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({ prompt: `Gere uma imagem para a ideia: ${idea.title} - ${idea.text}` }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      // Assuming the backend returns a URL or base64 image data
-      setGeneratedImageUrl(data.imageUrl || 'https://via.placeholder.com/300x200?text=Imagem+Gerada');
-      setMessage('Imagem gerada com sucesso!');
-    } catch (error) {
-      console.error('Erro ao gerar imagem:', error);
-      setMessage(`Erro ao gerar imagem: ${error.message}`);
-    } finally {
-      setLoadingAI(false);
     }
   };
 
@@ -187,6 +189,11 @@ function IdeaDetail({ idea, onConnectIdeaClick, onBackClick, user }) {
     }
   };
 
+  const handleSaveCreations = () => {
+    // This is a placeholder for the save creations functionality
+    setMessage('Criações salvas com sucesso!');
+  };
+
   return (
     <div className="container idea-detail-container">
       <img src="/logo.png" alt="Ideia+ Logo" className="logo logo-small" />
@@ -215,7 +222,8 @@ function IdeaDetail({ idea, onConnectIdeaClick, onBackClick, user }) {
         <>
           <h2>{idea.title}</h2>
           <p>{idea.text}</p>
-          <img src={generatedImageUrl || idea.imageUrl} alt="Imagem da Ideia" className="idea-image" />
+          {loadingAI && <p>Gerando imagem...</p>}
+          {generatedImageUrl && <img src={generatedImageUrl} alt="Imagem da Ideia" className="idea-image" />}
 
           {user && (
             <div className="button-group">
@@ -228,7 +236,6 @@ function IdeaDetail({ idea, onConnectIdeaClick, onBackClick, user }) {
 
       <h3>Recursos de IA:</h3>
       <div className="button-group">
-        <button onClick={generateImage} disabled={loadingAI}>Gerar Imagem</button>
         <button onClick={expandIdea} disabled={loadingAI}>Expandir Ideia</button>
       </div>
       {expandedIdea && (
@@ -260,6 +267,7 @@ function IdeaDetail({ idea, onConnectIdeaClick, onBackClick, user }) {
       </div>
 
       <button onClick={onConnectIdeaClick}>Conectar com outra ideia</button>
+      <button onClick={handleSaveCreations}>Salvar Criações</button>
       {message && <p>{message}</p>}
     </div>
   );
