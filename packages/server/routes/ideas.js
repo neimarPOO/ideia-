@@ -18,7 +18,7 @@ router.get('/:id', authenticateToken, (req, res) => {
   if (idea) {
     res.json(idea);
   } else {
-    res.status(404).send('Idea not found');
+    res.status(404).json({ error: 'Idea not found' });
   }
 });
 
@@ -26,7 +26,7 @@ router.get('/:id', authenticateToken, (req, res) => {
 router.post('/', authenticateToken, (req, res) => {
   const { title, text, tags, imageUrl } = req.body;
   if (!title || !text) {
-    return res.status(400).send('Title and text are required');
+    return res.status(400).json({ error: 'Title and text are required' });
   }
   const newIdea = {
     id: Date.now().toString(), // Simple unique ID
@@ -50,7 +50,7 @@ router.put('/:id', authenticateToken, (req, res) => {
     ideas[ideaIndex] = { ...ideas[ideaIndex], title, text, tags: tags || [], imageUrl: imageUrl || null };
     res.json(ideas[ideaIndex]);
   } else {
-    res.status(404).send('Idea not found');
+    res.status(404).json({ error: 'Idea not found' });
   }
 });
 
@@ -62,7 +62,7 @@ router.delete('/:id', authenticateToken, (req, res) => {
     ideas.splice(0, ideas.length, ...filteredIdeas); // Update the in-memory array
     res.status(204).send();
   } else {
-    res.status(404).send('Idea not found');
+    res.status(404).json({ error: 'Idea not found' });
   }
 });
 
@@ -70,7 +70,7 @@ router.delete('/:id', authenticateToken, (req, res) => {
 router.post('/suggest', authenticateToken, async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) {
-    return res.status(400).send('Prompt is required');
+    return res.status(400).json({ error: 'Prompt is required' });
   }
 
   try {
@@ -78,7 +78,7 @@ router.post('/suggest', authenticateToken, async (req, res) => {
     res.json({ suggestion });
   } catch (error) {
     console.error('Error generating suggestion:', error);
-    res.status(500).send('Failed to generate suggestion');
+    res.status(500).json({ error: 'Failed to generate suggestion' });
   }
 });
 
@@ -86,7 +86,7 @@ router.post('/suggest', authenticateToken, async (req, res) => {
 router.post('/generate-image', authenticateToken, async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) {
-    return res.status(400).send('Prompt is required');
+    return res.status(400).json({ error: 'Prompt is required' });
   }
 
   try {
@@ -94,7 +94,7 @@ router.post('/generate-image', authenticateToken, async (req, res) => {
     res.json({ imageUrl });
   } catch (error) {
     console.error('Error generating image:', error);
-    res.status(500).send('Failed to generate image');
+    res.status(500).json({ error: 'Failed to generate image' });
   }
 });
 

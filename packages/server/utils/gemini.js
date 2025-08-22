@@ -14,17 +14,18 @@ async function generateText(prompt) {
 }
 
 async function generateImageFromText(prompt) {
-  // Use a model that supports image generation
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-preview-image-generation" });
+  const model = genAI.getGenerativeModel({ model: "imagen-2-pro" });
 
   const result = await model.generateContent(prompt);
   const response = await result.response;
-  // Assuming the response contains image data or a URL
-  // The actual handling of image generation response might be more complex
-  // and depend on the exact output format of the model.
-  // For now, we'll return a placeholder or a simplified representation.
-  const text = response.text(); // Or response.image() if available
-  return text; // This will likely need adjustment based on actual API response for images
+  const images = response.candidates[0].content.parts;
+
+  if (!images || images.length === 0) {
+    throw new Error("No images were generated.");
+  }
+
+  const imageData = images[0].fileData;
+  return `data:${imageData.mimeType};base64,${imageData.data}`;
 }
 
 module.exports = { generateText, generateImageFromText };
