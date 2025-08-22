@@ -74,27 +74,11 @@ router.post('/suggest', authenticateToken, async (req, res) => {
   }
 
   try {
-    const suggestion = await generateText(prompt);
+    const suggestion = await generateText(prompt, 500);
     res.json({ suggestion });
   } catch (error) {
     console.error('Error generating suggestion:', error);
     res.status(500).json({ error: 'Failed to generate suggestion' });
-  }
-});
-
-// POST to generate image using Gemini API
-router.post('/generate-image', authenticateToken, async (req, res) => {
-  const { prompt } = req.body;
-  if (!prompt) {
-    return res.status(400).json({ error: 'Prompt is required' });
-  }
-
-  try {
-    const imageUrl = await generateImageFromText(prompt);
-    res.json({ imageUrl });
-  } catch (error) {
-    console.error('Error generating image:', error);
-    res.status(500).json({ error: 'Failed to generate image' });
   }
 });
 

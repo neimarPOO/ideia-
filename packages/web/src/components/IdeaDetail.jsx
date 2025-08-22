@@ -8,43 +8,8 @@ function IdeaDetail({ idea, onConnectIdeaClick, onBackClick, user }) {
   const [expandedIdea, setExpandedIdea] = useState('');
   const [creativeExtensions, setCreativeExtensions] = useState('');
   const [internalConnections, setInternalConnections] = useState('');
-  const [generatedImageUrl, setGeneratedImageUrl] = useState(idea.imageUrl || '');
+  const [generatedImageUrl, setGeneratedImageUrl] = useState(idea.imageUrl || 'https://via.placeholder.com/300x200?text=Imagem+da+Ideia');
   const [loadingAI, setLoadingAI] = useState(false);
-
-  const generateImage = async () => {
-    if (!user || generatedImageUrl) {
-      return;
-    }
-    setLoadingAI(true);
-    try {
-      const idToken = await user.getIdToken();
-      const response = await fetch('http://localhost:3001/ideas/generate-image', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({ prompt: `Gere uma imagem para a ideia: ${idea.title} - ${idea.text}` }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setGeneratedImageUrl(data.imageUrl || 'https://via.placeholder.com/300x200?text=Imagem+Gerada');
-      setMessage('Imagem gerada com sucesso!');
-    } catch (error) {
-      console.error('Erro ao gerar imagem:', error);
-      setMessage(`Erro ao gerar imagem: ${error.message}`);
-    } finally {
-      setLoadingAI(false);
-    }
-  };
-
-  useEffect(() => {
-    generateImage();
-  }, [user]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -222,7 +187,6 @@ function IdeaDetail({ idea, onConnectIdeaClick, onBackClick, user }) {
         <>
           <h2>{idea.title}</h2>
           <p>{idea.text}</p>
-          {loadingAI && <p>Gerando imagem...</p>}
           {generatedImageUrl && <img src={generatedImageUrl} alt="Imagem da Ideia" className="idea-image" />}
 
           {user && (
